@@ -3,14 +3,14 @@ import { settingsService } from '../services/settingsService';
 
 interface SettingsContextType {
   whatsappLink: string;
-  setWhatsappLink: (link: string) => void;
+  setWhatsappLink: (link: string) => Promise<void>;
   loading: boolean;
   error: Error | null;
 }
 
 const SettingsContext = createContext<SettingsContextType>({
   whatsappLink: '',
-  setWhatsappLink: () => {},
+  setWhatsappLink: async () => {},
   loading: true,
   error: null
 });
@@ -20,32 +20,50 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
-  const setWhatsappLink = async (link: string) => {
-    try {
-      const settings = await settingsService.updateSettings(link);
-      setWhatsappLinkState(settings.whatsapp_link);
-    } catch (err) {
-      console.error('Error updating WhatsApp link:', err);
-      setError(err instanceof Error ? err : new Error('Failed to update WhatsApp link'));
-    }
-  };
-
   useEffect(() => {
+    let mounted = true;
+
     const loadSettings = async () => {
       try {
+        setLoading(true);
         const settings = await settingsService.getSettings();
-        setWhatsappLinkState(settings.whatsapp_link);
-        setError(null);
+        if (mounted) {
+          setWhatsappLinkState(settings?.whatsapp_link || '');
+          setError(null);
+        }
       } catch (err) {
-        console.error('Error loading settings:', err);
-        setError(err instanceof Error ? err : new Error('Failed to load settings'));
+        if (mounted) {
+          console.error('Error loading settings:', err);
+          setError(err instanceof Error ? err : new Error('Failed to load settings'));
+        }
       } finally {
-        setLoading(false);
+        if (mounted) {
+          setLoading(false);
+        }
       }
     };
 
     loadSettings();
+
+    return () => {
+      mounted = false;
+    };
   }, []);
+
+  const setWhatsappLink = async (link: string) => {
+    try {
+      setLoading(true);
+      const settings = await settingsService.updateSettings(link);
+      setWhatsappLinkState(settings.whatsapp_link);
+      setError(null);
+    } catch (err) {
+      console.error('Error updating WhatsApp link:', err);
+      setError(err instanceof Error ? err : new Error('Failed to update WhatsApp link'));
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <SettingsContext.Provider value={{ whatsappLink, setWhatsappLink, loading, error }}>
