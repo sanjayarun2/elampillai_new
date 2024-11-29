@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { Calendar, User, MessageCircle, Trash2, Share2 } from 'lucide-react';
-import { storage } from '../utils/storage';
+import { useSupabaseQuery } from '../hooks/useSupabaseQuery';
+import { blogService } from '../services/blogService';
+import { useSettings } from '../context/SettingsContext';
 import type { BlogPost as BlogPostType } from '../types';
 import { Helmet } from 'react-helmet-async';
 
@@ -15,39 +17,26 @@ interface Comment {
 export default function BlogPost() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [post, setPost] = useState<BlogPostType | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState('');
   const [commentAuthor, setCommentAuthor] = useState('');
-  const whatsappLink = storage.get('whatsappLink', '');
+  const { whatsappLink } = useSettings();
 
-  useEffect(() => {
-    const loadPost = () => {
-      const posts = storage.get<BlogPostType[]>('blogPosts', []);
-      const foundPost = posts.find(p => p.id === id);
-      if (foundPost) {
-        setPost(foundPost);
-        // Update meta tags
-        document.title = `${foundPost.title} - Elampillai Community`;
-      } else {
-        navigate('/blog');
-      }
-    };
-
-    loadPost();
-    // Add event listener for popstate to handle browser back/forward
-    window.addEventListener('popstate', loadPost);
-    return () => window.removeEventListener('popstate', loadPost);
-  }, [id, navigate]);
+  const { data: post, loading, error } = useSupabaseQuery<BlogPostType>(
+    () => blogService.getById(id!),
+    [id]
+  );
 
   const handleShare = async () => {
+    if (!post) return;
+    
     const shareUrl = `${window.location.origin}/blog/${id}`;
-    const shareText = `Check out this post: ${post?.title}`;
+    const shareText = `Check out this post: ${post.title}`;
 
     if (navigator.share) {
       try {
         await navigator.share({
-          title: post?.title,
+          title: post.title,
           text: shareText,
           url: shareUrl,
         });
@@ -55,7 +44,6 @@ export default function BlogPost() {
         console.error('Error sharing:', err);
       }
     } else {
-      // Fallback to WhatsApp share
       const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareText + ' ' + shareUrl)}`;
       window.open(whatsappUrl, '_blank');
     }
@@ -80,10 +68,18 @@ export default function BlogPost() {
     setComments(comments.filter(comment => comment.id !== commentId));
   };
 
-  if (!post) {
+  if (loading) {
     return (
       <div className="max-w-4xl mx-auto px-4 py-8 text-center">
         <p className="text-gray-600">Loading post...</p>
+      </div>
+    );
+  }
+
+  if (error || !post) {
+    return (
+      <div className="max-w-4xl mx-auto px-4 py-8 text-center">
+        <p className="text-red-600">Error loading post. Please try again later.</p>
         <Link to="/blog" className="text-blue-600 hover:text-blue-800 mt-4 inline-block">
           Return to Blog
         </Link>
@@ -100,6 +96,13 @@ export default function BlogPost() {
         <meta property="og:description" content={post.content.substring(0, 155)} />
         <meta property="og:image" content={post.image || ''} />
         <meta property="og:url" content={`${window.location.origin}/blog/${id}`} />
+        <meta property="og:type" content="article" />
+        <meta property="og:site_name" content="Elampillai Community" />
+        
+        {/* WhatsApp specific meta tags */}
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:locale" content="en_US" />
       </Helmet>
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
