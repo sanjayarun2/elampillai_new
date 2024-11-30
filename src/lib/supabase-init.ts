@@ -2,81 +2,15 @@ import { supabase } from './supabase';
 
 export async function initializeDatabase() {
   try {
-    // Create settings table if it doesn't exist
-    const { error: settingsTableError } = await supabase.query(`
-      CREATE TABLE IF NOT EXISTS settings (
-        id TEXT PRIMARY KEY,
-        whatsapp_link TEXT,
-        updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-      );
-    `);
-
-    if (settingsTableError) {
-      console.error('Error creating settings table:', settingsTableError);
-    }
-
-    // Create blogs table if it doesn't exist
-    const { error: blogsTableError } = await supabase.query(`
-      CREATE TABLE IF NOT EXISTS blogs (
-        id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-        title TEXT NOT NULL,
-        content TEXT NOT NULL,
-        date TEXT NOT NULL,
-        author TEXT NOT NULL,
-        image TEXT,
-        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-      );
-    `);
-
-    if (blogsTableError) {
-      console.error('Error creating blogs table:', blogsTableError);
-    }
-
-    // Create shops table if it doesn't exist
-    const { error: shopsTableError } = await supabase.query(`
-      CREATE TABLE IF NOT EXISTS shops (
-        id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-        name TEXT NOT NULL,
-        address TEXT NOT NULL,
-        description TEXT NOT NULL,
-        rating NUMERIC(3,1) NOT NULL,
-        phone TEXT,
-        category TEXT NOT NULL,
-        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-      );
-    `);
-
-    if (shopsTableError) {
-      console.error('Error creating shops table:', shopsTableError);
-    }
-
-    // Create products table if it doesn't exist
-    const { error: productsTableError } = await supabase.query(`
-      CREATE TABLE IF NOT EXISTS products (
-        id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-        name TEXT NOT NULL,
-        description TEXT NOT NULL,
-        price NUMERIC(10,2) NOT NULL,
-        seller TEXT NOT NULL,
-        whatsapp_link TEXT NOT NULL,
-        image TEXT NOT NULL,
-        category TEXT NOT NULL,
-        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-      );
-    `);
-
-    if (productsTableError) {
-      console.error('Error creating products table:', productsTableError);
-    }
-
-    // Initialize settings if not exists
-    const { data: existingSettings } = await supabase
+    // Check if settings table exists
+    const { data: settingsData, error: settingsError } = await supabase
       .from('settings')
-      .select('*')
-      .single();
+      .select('id')
+      .limit(1);
 
-    if (!existingSettings) {
-      const { error: insertError } = await supabase
+    if (settingsError && settingsError.code === '42P01') {
+      // Settings table doesn't exist, create it
+      const { error } = await supabase
         .from('settings')
         .insert([
           {
@@ -86,19 +20,19 @@ export async function initializeDatabase() {
           }
         ]);
 
-      if (insertError) {
-        console.error('Error initializing settings:', insertError);
+      if (error) {
+        console.error('Error creating settings:', error);
       }
     }
 
-    // Add sample blog post if none exist
-    const { data: existingPosts } = await supabase
+    // Check if blogs table exists and add sample post if empty
+    const { data: blogsData, error: blogsError } = await supabase
       .from('blogs')
       .select('id')
       .limit(1);
 
-    if (!existingPosts?.length) {
-      const { error: blogError } = await supabase
+    if (!blogsData || blogsData.length === 0) {
+      const { error } = await supabase
         .from('blogs')
         .insert([
           {
@@ -110,8 +44,8 @@ export async function initializeDatabase() {
           }
         ]);
 
-      if (blogError) {
-        console.error('Error creating sample blog post:', blogError);
+      if (error) {
+        console.error('Error creating sample blog post:', error);
       }
     }
   } catch (error) {

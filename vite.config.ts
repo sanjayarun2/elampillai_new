@@ -13,7 +13,8 @@ export default defineConfig({
     exclude: ['lucide-react'],
   },
   server: {
-    historyApiFallback: true,
+    port: 5173,
+    host: true,
   },
   build: {
     rollupOptions: {
@@ -23,5 +24,9 @@ export default defineConfig({
         },
       },
     },
+  },
+  define: {
+    'process.env.VITE_SUPABASE_URL': JSON.stringify(process.env.VITE_SUPABASE_URL),
+    'process.env.VITE_SUPABASE_ANON_KEY': JSON.stringify(process.env.VITE_SUPABASE_ANON_KEY),
   },
 });
