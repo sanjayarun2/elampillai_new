@@ -8,12 +8,15 @@ import Shops from './pages/Shops';
 import Blog from './pages/Blog';
 import BlogPost from './pages/BlogPost';
 import Marketplace from './pages/Marketplace';
+import { Analytics } from '@vercel/analytics/react';
+
 
 function App() {
   return (
     <ErrorBoundary>
       <Router>
         <div className="min-h-screen bg-gray-50">
+          <Analytics />
           <Header />
           <main>
             <Routes>
