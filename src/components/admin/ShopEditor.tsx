@@ -1,45 +1,56 @@
-import React, { useState, useEffect } from 'react';
-import { storage } from '../../utils/storage';
+import React, { useState } from 'react';
+import { shopService } from '../../services/shopService';
+import { useSupabaseQuery } from '../../hooks/useSupabaseQuery';
 import type { Shop } from '../../types';
 
 export function ShopEditor() {
-  const [shops, setShops] = useState<Shop[]>(() => 
-    storage.get('shops', [])
+  const { data: shops, loading, error, refetch } = useSupabaseQuery<Shop[]>(
+    () => shopService.getAll()
   );
   const [currentShop, setCurrentShop] = useState<Partial<Shop>>({});
 
-  useEffect(() => {
-    storage.set('shops', shops);
-  }, [shops]);
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!currentShop.name?.trim()) return;
 
-    if (currentShop.id) {
-      setShops(shops.map(shop => 
-        shop.id === currentShop.id ? { ...shop, ...currentShop } : shop
-      ));
-    } else {
-      const newShop: Shop = {
-        id: Date.now().toString(),
-        name: currentShop.name,
-        description: currentShop.description || '',
-        address: currentShop.address || '',
-        rating: currentShop.rating || 0,
-        category: currentShop.category || 'General',
-        phone: currentShop.phone
-      };
-      setShops([...shops, newShop]);
+    try {
+      if (currentShop.id) {
+        await shopService.update(currentShop.id, currentShop);
+      } else {
+        await shopService.create({
+          name: currentShop.name,
+          description: currentShop.description || '',
+          address: currentShop.address || '',
+          rating: currentShop.rating || 0,
+          category: currentShop.category || 'General',
+          phone: currentShop.phone
+        });
+      }
+      setCurrentShop({});
+      refetch();
+    } catch (error) {
+      console.error('Error saving shop:', error);
     }
-    setCurrentShop({});
   };
 
-  const deleteShop = (id: string) => {
+  const deleteShop = async (id: string) => {
     if (window.confirm('Are you sure you want to delete this shop?')) {
-      setShops(shops.filter(shop => shop.id !== id));
+      try {
+        await shopService.delete(id);
+        refetch();
+      } catch (error) {
+        console.error('Error deleting shop:', error);
+      }
     }
   };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error loading shops: {error.message}</div>;
+  }
 
   return (
     <div className="space-y-6">
@@ -117,7 +128,7 @@ export function ShopEditor() {
       <div className="bg-white p-6 rounded-lg shadow">
         <h3 className="text-lg font-medium mb-4">Existing Shops</h3>
         <div className="space-y-4">
-          {shops.map(shop => (
+          {shops?.map(shop => (
             <div key={shop.id} className="flex items-center justify-between p-4 border rounded">
               <div>
                 <h4 className="font-medium">{shop.name}</h4>

@@ -1,44 +1,55 @@
 import React, { useState, useEffect } from 'react';
-import { storage } from '../../utils/storage';
+import { blogService } from '../../services/blogService';
 import type { BlogPost } from '../../types';
+import { useSupabaseQuery } from '../../hooks/useSupabaseQuery';
 
 export function BlogEditor() {
-  const [posts, setPosts] = useState<BlogPost[]>(() => 
-    storage.get('blogPosts', [])
+  const { data: posts, loading, error, refetch } = useSupabaseQuery<BlogPost[]>(
+    () => blogService.getAll()
   );
   const [currentPost, setCurrentPost] = useState<Partial<BlogPost>>({});
 
-  useEffect(() => {
-    storage.set('blogPosts', posts);
-  }, [posts]);
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!currentPost.title?.trim()) return;
 
-    if (currentPost.id) {
-      setPosts(posts.map(post => 
-        post.id === currentPost.id ? { ...post, ...currentPost } : post
-      ));
-    } else {
-      const newPost: BlogPost = {
-        id: Date.now().toString(),
-        title: currentPost.title,
-        content: currentPost.content || '',
-        date: new Date().toISOString().split('T')[0],
-        author: 'Admin',
-        image: currentPost.image
-      };
-      setPosts([...posts, newPost]);
+    try {
+      if (currentPost.id) {
+        await blogService.update(currentPost.id, currentPost);
+      } else {
+        await blogService.create({
+          title: currentPost.title,
+          content: currentPost.content || '',
+          date: new Date().toISOString().split('T')[0],
+          author: 'Admin',
+          image: currentPost.image
+        });
+      }
+      setCurrentPost({});
+      refetch();
+    } catch (error) {
+      console.error('Error saving blog post:', error);
     }
-    setCurrentPost({});
   };
 
-  const deletePost = (id: string) => {
+  const deletePost = async (id: string) => {
     if (window.confirm('Are you sure you want to delete this post?')) {
-      setPosts(posts.filter(post => post.id !== id));
+      try {
+        await blogService.delete(id);
+        refetch();
+      } catch (error) {
+        console.error('Error deleting blog post:', error);
+      }
     }
   };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error loading posts: {error.message}</div>;
+  }
 
   return (
     <div className="space-y-6">
@@ -84,7 +95,7 @@ export function BlogEditor() {
       <div className="bg-white p-6 rounded-lg shadow">
         <h3 className="text-lg font-medium mb-4">Existing Posts</h3>
         <div className="space-y-4">
-          {posts.map(post => (
+          {posts?.map(post => (
             <div key={post.id} className="flex items-center justify-between p-4 border rounded">
               <div>
                 <h4 className="font-medium">{post.title}</h4>
