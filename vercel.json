@@ -27,4 +27,4 @@
       "dest": "/index.html"  // Redirect all other requests to index.html
     }
   ]
-}
+}  //udpate
