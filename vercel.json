@@ -19,8 +19,12 @@
       "dest": "/favicon.$1"
     },
     {
+      "src": "/robots.txt",
+      "dest": "/robots.txt"  // Serve robots.txt directly
+    },
+    {
       "src": ".*",
-      "dest": "/index.html"
+      "dest": "/index.html"  // Redirect all other requests to index.html
     }
   ]
 }
