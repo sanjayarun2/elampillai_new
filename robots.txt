@@ -1,0 +1,16 @@
+# robots.txt for https://your-domain.com
+
+# Allow all search engines to crawl everything except for specified areas
+User-agent: *
+Disallow: /Admin/      # Prevent crawling of admin pages
+Disallow: /AdminDashboard/      # Prevent crawling of login pages
+Disallow: /checkout/   # Prevent crawling of checkout pages
+Disallow: /cart/       # Prevent crawling of cart pages
+Disallow: /search/     # Prevent crawling of search result pages
+
+# Explicitly allow important pages or files
+Allow: /robots.txt     # Ensure robots.txt is accessible to crawlers
+Allow: /               # Allow the root page of your site
+
+# Sitemap location
+Sitemap: https://elampillai.in/sitemap.xml
