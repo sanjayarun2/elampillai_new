@@ -16,8 +16,8 @@ const SettingsContext = createContext<SettingsContextType>({
 });
 
 export function SettingsProvider({ children }: { children: React.ReactNode }) {
-  const [whatsappLink, setWhatsappLinkState] = useState('');
-  const [loading, setLoading] = useState(true);
+  const [whatsappLink, setWhatsappLinkState] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
@@ -50,7 +50,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
-  const setWhatsappLink = async (link: string) => {
+  const setWhatsappLink = async (link: string): Promise<void> => {
     try {
       setLoading(true);
       const settings = await settingsService.updateSettings(link);
