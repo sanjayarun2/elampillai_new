@@ -1,6 +1,6 @@
 // next-seo.config.js
 export default {
-    title: 'Elampillai | Sarees',
+    title: 'Elampillai sarees',
     description: 'Discover a comprehensive platform offering unique marketplace, insightful blogs, and innovative solutions.',
     openGraph: {
       type: 'website',
