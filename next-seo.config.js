@@ -1,7 +1,7 @@
 // next-seo.config.js
 export default {
     title: 'Elampillai sarees',
-    description: 'Discover a comprehensive platform offering unique marketplace, insightful blogs, and innovative solutions.',
+    description: 'Saree,Saree shops,Wholesale saree shop,elampillai soft silk sarees,637502,pattu sarees in elampillai,cottons sarees in elampillai ',
     openGraph: {
       type: 'website',
       locale: 'en_IE',
