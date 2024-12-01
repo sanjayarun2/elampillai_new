@@ -9,8 +9,12 @@ export default function Header() {
   return (
     <header className="bg-gradient-to-r from-blue-600 to-blue-800 text-white shadow-lg">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="py-2 text-center bg-gradient-to-r from-green-500 to-green-600">
-          <WhatsAppButton className="w-full sm:w-auto justify-center" />
+        <div className="py-1 text-center bg-gradient-to-r from-green-500 to-green-600">
+          <WhatsAppButton 
+            className="w-auto sm:w-auto justify-center" 
+            size="sm"
+            showText={true}
+          />
         </div>
         
         <div className="flex justify-between items-center py-4">

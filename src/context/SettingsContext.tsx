@@ -28,7 +28,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
         setLoading(true);
         const settings = await settingsService.getSettings();
         if (mounted) {
-          setWhatsappLinkState(settings?.whatsapp_link || '');
+          setWhatsappLinkState(settings.whatsapp_link || '');
           setError(null);
         }
       } catch (err) {
