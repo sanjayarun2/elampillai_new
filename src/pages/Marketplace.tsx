@@ -2,6 +2,7 @@ import React from 'react';
 import ProductCard from '../components/ProductCard';
 import { storage } from '../utils/storage';
 import type { Product } from '../types';
+<meta name="google-adsense-account" content="ca-pub-9375434489866075"></meta>
 
 export default function Marketplace() {
   const products = storage.get<Product[]>('products', []);

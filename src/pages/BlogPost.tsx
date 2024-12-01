@@ -7,6 +7,7 @@ import type { BlogPost as BlogPostType } from '../types';
 import { Helmet } from 'react-helmet-async';
 import  WhatsAppButton  from '../components/ui/WhatsAppButton';
 import ShareButton from '../components/ui/ShareButton';
+<meta name="google-adsense-account" content="ca-pub-9375434489866075"></meta>
 
 interface Comment {
   id: string;

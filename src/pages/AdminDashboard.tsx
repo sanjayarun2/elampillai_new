@@ -5,6 +5,7 @@ import { BlogEditor } from '../components/admin/BlogEditor';
 import { MarketplaceEditor } from '../components/admin/MarketplaceEditor';
 import { SettingsEditor } from '../components/admin/SettingsEditor';
 import { Eye, EyeOff } from 'lucide-react';
+<meta name="google-adsense-account" content="ca-pub-9375434489866075"></meta>
 
 // Simple password - no hashing needed for this use case
 const ADMIN_PASSWORD = 'elampillai2024';

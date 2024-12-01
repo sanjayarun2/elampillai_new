@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { ShoppingBag, Newspaper, Store, MessageCircle } from 'lucide-react';
 import { storage } from '../utils/storage';
+<meta name="google-adsense-account" content="ca-pub-9375434489866075"></meta>
 
 export default function Home() {
   const whatsappLink = storage.get('whatsappLink', '');

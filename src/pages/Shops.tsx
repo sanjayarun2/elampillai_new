@@ -3,6 +3,7 @@ import ShopCard from '../components/ShopCard';
 import { useSupabaseQuery } from '../hooks/useSupabaseQuery';
 import { shopService } from '../services/shopService';
 import type { Shop } from '../types';
+<meta name="google-adsense-account" content="ca-pub-9375434489866075"></meta>
 
 export default function Shops() {
   const { data: shops, loading, error } = useSupabaseQuery<Shop[]>(

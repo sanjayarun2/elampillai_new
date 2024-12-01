@@ -3,6 +3,7 @@ import BlogCard from '../components/BlogCard';
 import { useSupabaseQuery } from '../hooks/useSupabaseQuery';
 import { blogService } from '../services/blogService';
 import type { BlogPost } from '../types';
+<meta name="google-adsense-account" content="ca-pub-9375434489866075"></meta>
 
 export default function Blog() {
   const { data: posts, loading, error } = useSupabaseQuery<BlogPost[]>(

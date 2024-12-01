@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Lock } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+<meta name="google-adsense-account" content="ca-pub-9375434489866075"></meta>
 
 export default function Admin() {
   const [password, setPassword] = useState('');
