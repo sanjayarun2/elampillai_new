@@ -19,31 +19,33 @@ export const WhatsAppButton: React.FC<WhatsAppButtonProps> = ({
   className = '',
 }) => {
   const handleClick = (event: React.MouseEvent) => {
-    // Validate WhatsApp link format
+    // Ensure the link is valid
     if (!whatsappLink.startsWith('https://wa.me/') && !whatsappLink.startsWith('https://chat.whatsapp.com/')) {
       event.preventDefault();
       alert('Invalid WhatsApp Link');
       return;
     }
 
-    // Check if the device is mobile
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-
-    // For mobile: Use `window.location.href` to trigger the WhatsApp app
-    if (isMobile) {
-      const whatsappUrl = `https://wa.me/${whatsappLink.split('https://wa.me/')[1]}`;
-      window.location.href = whatsappUrl;  // This should open WhatsApp on mobile
-    } else {
-      // For desktop: Open in a new tab
-      window.open(whatsappLink, '_blank', 'noopener,noreferrer');
+    // Mobile redirection logic
+    try {
+      if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+        // For mobile devices, redirect directly to WhatsApp
+        window.location.href = whatsappLink;  // This should directly open the app
+      } else {
+        // For desktop, open WhatsApp link in a new tab
+        window.open(whatsappLink, '_blank', 'noopener,noreferrer');
+      }
+    } catch (error) {
+      console.error('Error opening WhatsApp link:', error);
+      alert('Could not open WhatsApp link');
     }
   };
 
   return (
     <a
-      href={whatsappLink} // Standard anchor href for fallback or desktop
-      onClick={handleClick} // Custom behavior on click
-      target="_blank" // Desktop opens in a new tab
+      href={whatsappLink}
+      onClick={handleClick} // Trigger the handleClick function when the link is clicked
+      target="_blank"
       rel="noopener noreferrer"
       className={`inline-flex items-center ${sizeClasses[size]} bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors active:bg-green-700 ${className}`}
     >
