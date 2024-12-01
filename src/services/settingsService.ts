@@ -1,41 +1,53 @@
-import { supabase } from '../lib/supabase';
+// src/services/settingsService.ts
+import { createClient } from '@supabase/supabase-js';
+
+// Initialize Supabase client
+const supabase = createClient(
+  import.meta.env.VITE_SUPABASE_URL, 
+  import.meta.env.VITE_SUPABASE_ANON_KEY
+);
 
 interface Settings {
-  id: string;
   whatsapp_link: string;
-  updated_at: string;
 }
 
 export const settingsService = {
   async getSettings(): Promise<Settings> {
-    const { data, error } = await supabase
-      .from('settings')
-      .select('*')
-      .eq('id', '1')
-      .single();
+    try {
+      const { data, error } = await supabase
+        .from('settings')
+        .select('whatsapp_link')
+        .single();
 
-    if (error) {
-      throw error;
+      if (error) {
+        console.error('Error fetching settings:', error);
+        return { whatsapp_link: '' };
+      }
+
+      return { whatsapp_link: data?.whatsapp_link || '' };
+    } catch (err) {
+      console.error('Unexpected error:', err);
+      return { whatsapp_link: '' };
     }
-
-    return data;
   },
 
   async updateSettings(whatsappLink: string): Promise<Settings> {
-    const { data, error } = await supabase
-      .from('settings')
-      .update({ 
-        whatsapp_link: whatsappLink,
-        updated_at: new Date().toISOString()
-      })
-      .eq('id', '1')
-      .select()
-      .single();
+    try {
+      const { data, error } = await supabase
+        .from('settings')
+        .upsert({ whatsapp_link: whatsappLink })
+        .select()
+        .single();
 
-    if (error) {
-      throw error;
+      if (error) {
+        console.error('Error updating settings:', error);
+        throw error;
+      }
+
+      return { whatsapp_link: data?.whatsapp_link || '' };
+    } catch (err) {
+      console.error('Unexpected error:', err);
+      throw err;
     }
-
-    return data;
   }
 };

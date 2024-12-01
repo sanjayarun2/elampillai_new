@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { Menu, X, MapPin } from 'lucide-react';
-import WhatsAppButton from './ui/WhatsAppButton';
+import { WhatsAppButton } from './ui/WhatsAppButton';
 
 export default function Header() {
   const [isOpen, setIsOpen] = React.useState(false);

@@ -5,7 +5,7 @@ import { useSupabaseQuery } from '../hooks/useSupabaseQuery';
 import { blogService } from '../services/blogService';
 import type { BlogPost as BlogPostType } from '../types';
 import { Helmet } from 'react-helmet-async';
-import WhatsAppButton from '../components/ui/WhatsAppButton';
+import { WhatsAppButton } from '../components/ui/WhatsAppButton';
 import ShareButton from '../components/ui/ShareButton';
 
 interface Comment {
