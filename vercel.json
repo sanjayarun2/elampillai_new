@@ -19,12 +19,11 @@
       "dest": "/favicon.$1"
     },
     {
-      "src": "/robots.txt",
-      "dest": "/robots.txt"  // Serve robots.txt directly
+      "handle": "filesystem"
     },
     {
-      "src": ".*",
-      "dest": "/index.html"  // Redirect all other requests to index.html
+      "src": "/.*",
+      "dest": "/index.html"
     }
   ]
-}  //udpate
+}
