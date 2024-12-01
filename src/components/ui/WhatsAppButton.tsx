@@ -18,7 +18,7 @@ export const WhatsAppButton: React.FC<WhatsAppButtonProps> = ({
   size = 'medium',
   className = '',
 }) => {
-  const handleClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+  const handleClick = (event: React.MouseEvent) => {
     // Validate WhatsApp link
     if (!whatsappLink.startsWith('https://wa.me/') && !whatsappLink.startsWith('https://chat.whatsapp.com/')) {
       event.preventDefault();
@@ -26,14 +26,14 @@ export const WhatsAppButton: React.FC<WhatsAppButtonProps> = ({
       return;
     }
 
-    // Attempt to open WhatsApp link
+    // For mobile devices, we need to use a more reliable method of redirection
     try {
-      // For mobile devices, use a direct link
       if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-        window.location.href = whatsappLink;
+        // Use a more reliable URL pattern for WhatsApp (wa.me) redirection
+        const whatsappUrl = `https://wa.me/${whatsappLink.split('https://wa.me/')[1]}`;
+        window.location.href = whatsappUrl;  // Mobile-friendly redirection
       } else {
-        // For desktop, open in a new tab
-        window.open(whatsappLink, '_blank', 'noopener,noreferrer');
+        window.open(whatsappLink, '_blank', 'noopener,noreferrer');  // Desktop opens in a new tab
       }
     } catch (error) {
       console.error('Error opening WhatsApp link:', error);
@@ -47,14 +47,7 @@ export const WhatsAppButton: React.FC<WhatsAppButtonProps> = ({
       onClick={handleClick}
       target="_blank"
       rel="noopener noreferrer"
-      className={`
-        inline-flex items-center 
-        ${sizeClasses[size]} 
-        bg-green-500 text-white 
-        rounded-lg hover:bg-green-600 
-        transition-colors active:bg-green-700 
-        ${className}
-      `}
+      className={`inline-flex items-center ${sizeClasses[size]} bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors active:bg-green-700 ${className}`}
     >
       <MessageCircle className="mr-2 h-5 w-5" />
       <span>Join WhatsApp</span>
