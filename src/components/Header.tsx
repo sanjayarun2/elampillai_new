@@ -1,7 +1,9 @@
+// components/Header.tsx
+
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { Menu, X, MapPin } from 'lucide-react';
-import { WhatsAppButton } from './ui/WhatsAppButton';
+import WhatsAppButton from './ui/WhatsAppButton'; // Default import, not named import
 
 export default function Header() {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -16,7 +18,7 @@ export default function Header() {
             showText={true}
           />
         </div>
-        
+
         <div className="flex justify-between items-center py-4">
           <NavLink to="/" className="flex items-center space-x-2">
             <MapPin className="h-6 w-6" />
