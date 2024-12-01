@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { Calendar, User, MessageCircle, Trash2, Share2 } from 'lucide-react';
+import { Calendar, User, Trash2 } from 'lucide-react';
 import { useSupabaseQuery } from '../hooks/useSupabaseQuery';
 import { blogService } from '../services/blogService';
-import { useSettings } from '../context/SettingsContext';
 import type { BlogPost as BlogPostType } from '../types';
 import { Helmet } from 'react-helmet-async';
+import WhatsAppButton from '../components/ui/WhatsAppButton';
+import ShareButton from '../components/ui/ShareButton';
 
 interface Comment {
   id: string;
@@ -19,34 +20,11 @@ export default function BlogPost() {
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState('');
   const [commentAuthor, setCommentAuthor] = useState('');
-  const { whatsappLink } = useSettings();
 
   const { data: post, loading, error } = useSupabaseQuery<BlogPostType>(
     () => blogService.getById(id!),
     [id]
   );
-
-  const handleShare = async () => {
-    if (!post) return;
-    
-    const shareUrl = `${window.location.origin}/blog/${id}`;
-    const shareText = `Check out this post: ${post.title}`;
-
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: post.title,
-          text: shareText,
-          url: shareUrl,
-        });
-      } catch (err) {
-        console.error('Error sharing:', err);
-      }
-    } else {
-      const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareText + ' ' + shareUrl)}`;
-      window.open(whatsappUrl, '_blank');
-    }
-  };
 
   const handleCommentSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -86,19 +64,29 @@ export default function BlogPost() {
     );
   }
 
+  const shareUrl = `${window.location.origin}/blog/${id}`;
+
   return (
     <>
       <Helmet>
         <title>{`${post.title} - Elampillai Community`}</title>
         <meta name="description" content={post.content.substring(0, 155)} />
+        
+        {/* Open Graph / Facebook */}
+        <meta property="og:type" content="article" />
         <meta property="og:title" content={post.title} />
         <meta property="og:description" content={post.content.substring(0, 155)} />
         <meta property="og:image" content={post.image || ''} />
-        <meta property="og:url" content={`${window.location.origin}/blog/${id}`} />
-        <meta property="og:type" content="article" />
+        <meta property="og:url" content={shareUrl} />
         <meta property="og:site_name" content="Elampillai Community" />
         
-        {/* WhatsApp specific meta tags */}
+        {/* Twitter */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={post.title} />
+        <meta name="twitter:description" content={post.content.substring(0, 155)} />
+        <meta name="twitter:image" content={post.image || ''} />
+        
+        {/* WhatsApp specific */}
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
         <meta property="og:locale" content="en_US" />
@@ -107,6 +95,17 @@ export default function BlogPost() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <article className="bg-white rounded-lg shadow-md overflow-hidden">
           <div className="p-6">
+            <div className="flex justify-between items-center mb-6">
+              <Link to="/blog" className="text-blue-600 hover:text-blue-800">
+                ← Back to Blog
+              </Link>
+              <ShareButton
+                title={post.title}
+                text={`Check out this post: ${post.title}`}
+                url={shareUrl}
+              />
+            </div>
+
             {post.image && (
               <img 
                 src={post.image} 
@@ -114,16 +113,8 @@ export default function BlogPost() {
                 className="w-full h-64 object-cover rounded-lg mb-6"
               />
             )}
-            <div className="flex justify-between items-start mb-4">
-              <h1 className="text-3xl font-bold text-gray-900">{post.title}</h1>
-              <button
-                onClick={handleShare}
-                className="text-blue-600 hover:text-blue-800"
-                aria-label="Share post"
-              >
-                <Share2 className="h-6 w-6" />
-              </button>
-            </div>
+            
+            <h1 className="text-3xl font-bold text-gray-900 mb-4">{post.title}</h1>
             
             <div className="flex items-center space-x-4 text-gray-600 mb-6">
               <div className="flex items-center">
@@ -136,24 +127,18 @@ export default function BlogPost() {
               </div>
             </div>
             
-            <div className="prose max-w-none">
+            <div className="prose max-w-none mb-8">
               <p className="text-gray-600 whitespace-pre-wrap">{post.content}</p>
             </div>
 
-            {whatsappLink && (
-              <div className="mt-8 text-center">
-                <h3 className="text-xl font-semibold mb-4">எங்கள் சமூகத்தில் சேரவும் | Join Our Community</h3>
-                <a
-                  href={whatsappLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition"
-                >
-                  <MessageCircle className="h-6 w-6 mr-2" />
-                  Join WhatsApp Community
-                </a>
-              </div>
-            )}
+            <div className="flex justify-between items-center">
+              <ShareButton
+                title={post.title}
+                text={`Check out this post: ${post.title}`}
+                url={shareUrl}
+              />
+              <WhatsAppButton />
+            </div>
           </div>
         </article>
 
@@ -161,7 +146,6 @@ export default function BlogPost() {
         <div className="mt-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-4">Comments</h2>
           
-          {/* Comment Form */}
           <form onSubmit={handleCommentSubmit} className="bg-white rounded-lg shadow-md p-6 mb-6">
             <div className="mb-4">
               <label htmlFor="author" className="block text-sm font-medium text-gray-700">Name</label>
@@ -193,7 +177,6 @@ export default function BlogPost() {
             </button>
           </form>
 
-          {/* Comments List */}
           <div className="space-y-4">
             {comments.map(comment => (
               <div key={comment.id} className="bg-white rounded-lg shadow-md p-6">
