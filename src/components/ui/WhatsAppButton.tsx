@@ -19,34 +19,26 @@ export const WhatsAppButton: React.FC<WhatsAppButtonProps> = ({
   className = '',
 }) => {
   const handleClick = (event: React.MouseEvent) => {
-    // Ensure the link is valid
-    if (!whatsappLink.startsWith('https://wa.me/') && !whatsappLink.startsWith('https://chat.whatsapp.com/')) {
-      event.preventDefault();
+    // Prevent the default behavior of the link if needed
+    event.preventDefault();
+
+    // Validate WhatsApp link
+    if (
+      !whatsappLink.startsWith('https://wa.me/') &&
+      !whatsappLink.startsWith('https://chat.whatsapp.com/')
+    ) {
       alert('Invalid WhatsApp Link');
       return;
     }
 
-    // Mobile redirection logic
-    try {
-      if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-        // For mobile devices, redirect directly to WhatsApp
-        window.location.href = whatsappLink;  // This should directly open the app
-      } else {
-        // For desktop, open WhatsApp link in a new tab
-        window.open(whatsappLink, '_blank', 'noopener,noreferrer');
-      }
-    } catch (error) {
-      console.error('Error opening WhatsApp link:', error);
-      alert('Could not open WhatsApp link');
-    }
+    // Directly set the location to the WhatsApp link
+    window.location.href = whatsappLink;
   };
 
   return (
     <a
-      href={whatsappLink}
-      onClick={handleClick} // Trigger the handleClick function when the link is clicked
-      target="_blank"
-      rel="noopener noreferrer"
+      href={whatsappLink} // Fallback link if JavaScript is disabled
+      onClick={handleClick} // Handle the click event for JavaScript functionality
       className={`inline-flex items-center ${sizeClasses[size]} bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors active:bg-green-700 ${className}`}
     >
       <MessageCircle className="mr-2 h-5 w-5" />
