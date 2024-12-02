@@ -1,7 +1,7 @@
 // next-seo.config.js
 export default {
     title: 'Elampillai Sarees',
-    description: 'Saree, Saree shops, Wholesale saree shop, elampillai soft silk sarees, 637502, pattu sarees, cottons sarees, best saree shop ',
+    description: 'Saree, Saree shops, Wholesale saree shop, elampillai soft silk sarees, 637502, pattu sarees, cottons sarees, best saree shop, softsilk ',
     openGraph: {
       type: 'website',
       locale: 'en_IE',
