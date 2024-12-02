@@ -22,7 +22,7 @@ const App: React.FC = () => {
             <Helmet>
               {/* Add Google AdSense Meta Tag */}
               <meta name="google-adsense-account" content="ca-pub-9375434489866075" />
-              <title>Elampillai Sarees</title>
+              <title>Elampillai Sarees, Wholesale shop, best saree shop, softsilk saree, salem</title>
             </Helmet>
             <Header />
             <main>
