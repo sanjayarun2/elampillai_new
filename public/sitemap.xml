@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <!-- Home Page -->
+    <url>
+        <loc>https://www.elampillai.in/</loc>
+        <lastmod>2024-12-02</lastmod>
+        <priority>1.00</priority>
+    </url>
+    <!-- Admin Dashboard -->
+    <url>
+        <loc>https://www.elampillai.in/admin-dashboard</loc>
+        <lastmod>2024-12-02</lastmod>
+        <priority>0.80</priority>
+    </url>
+    <!-- Shops Page -->
+    <url>
+        <loc>https://www.elampillai.in/shops</loc>
+        <lastmod>2024-12-02</lastmod>
+        <priority>0.80</priority>
+    </url>
+    <!-- Blog Page -->
+    <url>
+        <loc>https://www.elampillai.in/blog</loc>
+        <lastmod>2024-12-02</lastmod>
+        <priority>0.80</priority>
+    </url>
+    <!-- Individual Blog Post (Dynamic URL) -->
+    <url>
+        <loc>https://www.elampillai.in/blog/:id</loc>
+        <lastmod>2024-12-02</lastmod>
+        <priority>0.64</priority>
+    </url>
+    <!-- Marketplace Page -->
+    <url>
+        <loc>https://www.elampillai.in/marketplace</loc>
+        <lastmod>2024-12-02</lastmod>
+        <priority>0.64</priority>
+    </url>
+    <!-- Other pages can be added here -->
+    <url>
+        <loc>https://www.elampillai.in/contact</loc>
+        <lastmod>2024-12-02</lastmod>
+        <priority>0.64</priority>
+    </url>
+    <url>
+        <loc>https://www.elampillai.in/about</loc>
+        <lastmod>2024-12-02</lastmod>
+        <priority>0.64</priority>
+    </url>
+    <url>
+        <loc>https://www.elampillai.in/terms</loc>
+        <lastmod>2024-12-02</lastmod>
+        <priority>0.64</priority>
+    </url>
+    <url>
+        <loc>https://www.elampillai.in/privacy-policy</loc>
+        <lastmod>2024-12-02</lastmod>
+        <priority>0.64</priority>
+    </url>
+    <url>
+        <loc>https://www.elampillai.in/faqs</loc>
+        <lastmod>2024-12-02</lastmod>
+        <priority>0.64</priority>
+    </url>
+</urlset>

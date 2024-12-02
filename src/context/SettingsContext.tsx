@@ -1,18 +1,28 @@
 // src/context/SettingsContext.tsx
 
-import React, { createContext, useState, useEffect, useContext } from 'react';
+import React, { createContext, useState, useEffect, useContext, ReactNode } from 'react';
 
-const SettingsContext = createContext({
+interface SettingsContextType {
+  whatsappLink: string;
+  setWhatsappLink: (link: string) => void;
+}
+
+// Default context value
+const SettingsContext = createContext<SettingsContextType>({
   whatsappLink: '',
-  setWhatsappLink: (link: string) => {},
+  setWhatsappLink: () => {},
 });
 
-export const SettingsProvider: React.FC = ({ children }) => {
-  const [whatsappLink, setWhatsappLink] = useState('');
+interface SettingsProviderProps {
+  children: ReactNode;  // Explicitly typing children as ReactNode
+}
+
+export const SettingsProvider: React.FC<SettingsProviderProps> = ({ children }) => {
+  const [whatsappLink, setWhatsappLink] = useState<string>('');
 
   useEffect(() => {
-    // Fetch the WhatsApp link from your source (API, local storage, etc.)
-    setWhatsappLink('https://wa.me/1234567890'); // Example link, replace it with dynamic fetching logic
+    // Example link, replace it with dynamic fetching logic
+    setWhatsappLink('https://wa.me/1234567890');
   }, []);
 
   return (

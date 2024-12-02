@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react';  // Ensure React is imported
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { SettingsProvider } from './context/SettingsContext'; // Import SettingsProvider
 import { ErrorBoundary } from './components/ErrorBoundary';
@@ -12,7 +12,7 @@ import Marketplace from './pages/Marketplace';
 import { Analytics } from '@vercel/analytics/react';
 import { Helmet } from 'react-helmet'; // Import Helmet
 
-function App() {
+const App: React.FC = () => {
   return (
     <SettingsProvider>
       <ErrorBoundary>
@@ -22,7 +22,7 @@ function App() {
             <Helmet>
               {/* Add Google AdSense Meta Tag */}
               <meta name="google-adsense-account" content="ca-pub-9375434489866075" />
-              <title>Your Site Title</title>
+              <title>Elampillai Sarees</title>
             </Helmet>
             <Header />
             <main>
